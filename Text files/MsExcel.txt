@@ -1,0 +1,12 @@
+Used to store, organize, analysis calculate data.
+
+Basics:
+worksheet
+cell - cellname - C2
+
+SUM:
+	=SUM(A1:A7) / drag
+
+Delete/Insert - select row->right click-> insert -> above
+		select column->right click-> insert -> left
+		we can directly delete a row/column by selecting it.

@@ -1,0 +1,38 @@
+Git
+
+git init
+git status
+
+git add Shiva
+git commit -m "Commiting two files"
+git remote add origin https://github.com/shivapatelrangu/HMS.git
+
+git push -u origin main
+error: failed to push some refs to 'https://github.com/shivapatelrangu/HMS.git'
+git branch
+* master
+
+git push -u origin master
+
+
+working directory to Staging Area - git add
+Staging Area to Local Repository - git commit -m "commiting code"
+Local Repository to Remote Repository - git push
+
+dir
+cd  file_name
+git branch
+git checkout -b "copy1" //creating branch
+>git checkout master  // Branch switching
+git push
+git push --set-upstream origin copy1
+
+
+git commit -m"updated"
+git push
+
+
+remote origin already exists:
+->git remote set-url origin https://github.com/shivapatelrangu/Backend-FourApis-ReactJs.git (new repo)
+->git remote rm origin 
+->git remote add origin https://github.com/shivapatelrangu/Backend-FourApis-ReactJs.git

@@ -1,0 +1,549 @@
+node -v
+install create-react-app 
+npx create-react-app firstexample
+cd firstexample
+code .
+
+
+npm start      //to run an application
+npm install firebase
+
+npm install react-router-dom --save
+
+
+// UserForm.js
+import React, { useState } from 'react';
+import './index.css'; // Import your custom styling
+
+const App = () => {
+  const [formData, setFormData] = useState({
+    studentName: '',
+    email: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission (e.g., send data to server)
+    console.log('Form submitted:', formData);
+  };
+
+  return (
+    <div className="user-form">
+      <h2>User Information</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="studentName">Student Name:</label>
+          <input
+            type="text"
+            id="studentName"
+            name="studentName "
+            value={formData.studentName}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+};
+
+export default App;
+
+
+
+
+// StudentForm.js
+
+import React, { useState } from 'react';
+import './index.css'; // Import your custom styling
+
+const App = () => {
+  const [studentDetails, setStudentDetails] = useState({
+    studentName :'',
+    email :''
+  });
+  const {studentName,email}=studentDetails;
+  const changeHandler = e =>{
+    setStudentDetails ({...studentDetails,[e.target.name]:e.target.value})
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:8280/api-student/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ studentName, email }),
+      });
+
+      if (response.ok) {
+        console.log('Data saved successfully!');
+        const data = await response.text
+        alert(data)
+
+        // Handle success (e.g., show a success message)
+      } else {
+        console.error('Error saving data:', response.statusText);
+        // Handle error (e.g., show an error message)
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      // Handle network error
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+          <label htmlFor="studentName">Student Name:</label>
+          <input
+            type="text"
+            name="studentName "
+            onChange={changeHandler}
+      />
+      </div>
+        <div className="form-group">
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          onChange={changeHandler}
+      />
+       </div>
+      <div>
+      <button type="submit">Submit</button>
+      </div>
+    </form>
+  );
+};
+
+export default App;
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react'
+import {useNavigate} from 'react-router-dom';
+import HotelSearchService from './HotelSearchService';
+
+const HotelSearchRooms = () => { 
+    const[data,setData]=useState({
+        fromDate:'',
+        toDate:''
+    })
+    const {fromDate,toDate}=data;
+    const navigate = useNavigate(); 
+    
+      const handleChange = e =>{
+        setData ({...data,[e.target.name]:e.target.value})
+      }
+    
+    
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        // Handle form submission (e.g., send data to server)
+        
+      };
+      const handleGetDetails = () => {
+        navigate('/hotelSearchService', { state: { fromDate, toDate } });
+    };
+    
+  return (
+   
+    <div className="user-form">
+    <h2>User Information</h2>
+    <form onSubmit={handleSubmit}>
+    <div className="form-group">
+        <label htmlFor="fromDate">Checkin Date:</label>
+        <input
+          type="text"
+          id="fromDate"
+          name="fromDate"
+          value={data.fromDate}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      
+    
+      <div className="form-group">
+        <label htmlFor="toDate">Checkout Date:</label>
+        <input
+          type="text"
+          id="toDate"
+          name="toDate"
+          value={data.toDate}
+          onChange={handleChange}
+          required
+        />
+        
+      </div>
+      <button onClick={handleGetDetails}>Get Details</button>
+    </form>
+  </div>
+
+  )
+}
+
+export default HotelSearchRooms
+
+
+
+
+import React,{useEffect, useState} from 'react'
+import axios from 'axios';
+import { Link ,useLocation} from 'react-router-dom';
+
+const HotelSearchService = () => {
+    const location = useLocation();
+    const { fromDate, toDate } = location.state || {};
+
+  
+
+    const REST_URL = 'http://localhost:8281/api/search-rooms/available';
+
+   const[rooms,setRooms]=useState([])
+   useEffect (()=>{
+    axios.get(REST_URL,{
+        params:{
+            fromDate:fromDate,
+            toDate:toDate
+        },
+        headers :{
+            custId:1,
+            staffId:1
+        }
+    }).then((response) =>{
+        setRooms(response.data);
+    }).catch(error=>{
+        alert(error);
+    })
+   },[])
+   console.log(rooms);
+
+  return (
+
+
+    <div className='container'>
+       <table className="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Room Type</th>
+      <th>Price</th>
+      <th>Available Rooms</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rooms.map((room) => (
+      <tr key={room.roomType}>  
+        <td>{room.roomType}</td>
+        <td>{room.price}</td>
+        <td>{room.totalAvailableRooms}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+ <Link to ='/hotelSearchRooms'>Back to Search</Link>
+
+    </div>
+    
+  )
+}
+
+export default HotelSearchService
+	
+
+
+<table className="table table-striped table-hover">
+       {errorMessage && <div className="error-message">{errorMessage}</div>}
+  <thead>
+    <tr>
+      <th>Room Type</th>
+      <th>Price</th>
+      <th>Available Rooms</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rooms.map((room) => (
+      <tr key={room.roomType}>  
+        <td>{room.roomType}</td>
+        <td>{room.price}</td>
+        <td>{room.totalAvailableRooms}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+ <Link to ='/hotelSearchRooms'>Back to Search</Link>
+
+
+
+
+<div className='container'>
+       <table className="table table-striped table-hover">
+       
+  <thead>
+    <tr>
+      <th>Room Type</th>
+      <th>Price</th>
+      <th>Available Rooms</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rooms.map((room) => (
+      <tr key={room.roomType}>  
+        <td>{room.roomType}</td>
+        <td>{room.price}</td>
+        <td>{room.totalAvailableRooms}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+ <Link to ='/hotelSearchRooms'>Back to Search</Link>
+
+    </div>
+
+
+ <div>
+        <HeaderComponent/>
+        <div class="container text-center">
+        <div class="col">
+             <Link  to ="/hotelSearchRooms">search Rooms</Link>
+        </div>
+        <div class="col">
+             <Link  to ="/hotelSearchRooms">search Rooms</Link>
+        </div>
+        <div class="col">
+             <Link  to ="/hotelSearchRooms">search Rooms</Link>
+        </div>
+        <div class="col">
+             <Link  to ="/hotelSearchRooms">search Rooms</Link>
+        </div>
+        </div>
+
+
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
+  background:slategray;
+  /* padding-top: 100px;
+   border-radius: 50px; */
+}
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/* UserForm.css */
+.user-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+button {
+  background-color: #0074d9;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+.container{
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  margin-top: 400px;
+  width: 600px;
+  background: white;
+  padding-bottom: 30px;	
+}
+
+
+import React,{useEffect, useState} from 'react'
+import axios from 'axios';
+import { Link ,useLocation} from 'react-router-dom';
+
+const ViewService = () => {
+    const location = useLocation();
+    const { bookingId } = location.state || {};
+
+  
+
+   const REST_URL = 'http://localhost:8281/view-api/view-reservation';
+
+   const[rooms,setRooms]=useState({})
+   const [errorMessage, setErrorMessage] = useState('');
+  
+   useEffect (()=>{
+    axios.get(REST_URL,{
+        params:{
+            bookingId:bookingId
+        },
+        headers :{
+            custId:1,
+            staffId:1
+        }
+    }).then((response) =>{
+        setRooms(response.data); 
+        console.log(rooms.data)
+        setErrorMessage(''); 
+    }).catch(error=>{
+      if (error.response) {
+        setErrorMessage(error.response.data.message); 
+        console.log(error.response.data.message);
+        
+        
+      }
+    })
+   },[])
+
+   return (
+    <div className='container'>
+        {errorMessage ? (
+            <div  className="d-flex justify-content-center align-items-center alert-danger" style={{height: '100vh'}} >{errorMessage}
+             <button class="btn btn-outline-secondary" type="button" >
+                <Link to ='/'>Back to Home</Link>
+            </button>
+            </div>
+        ) : (
+            <>
+           <div className='container'> 
+           
+        <table   className="table table-striped table-hover">
+            <tr>
+                <th>Property</th>
+                <th>Info</th>
+            </tr>
+            <tr>
+                <th>Check-In Date</th>
+                <td>{rooms.checkInDate}</td>
+               
+            </tr>
+            <tr>
+                <th>Check-Out Date</th>
+                <td>{rooms.checkOutDate}</td>
+            </tr>
+            <tr>
+                <th>No. of Rooms</th>
+                <td>{rooms.noOfRooms}</td>
+            </tr>
+            <tr>
+                <th>AC Rooms</th>
+                <td>{rooms.acRooms}</td>
+            </tr>
+            <tr>
+                <th>Non-AC Rooms</th>
+                <td>{rooms.nonAcRooms}</td>
+            </tr>
+            <tr>
+                <th>Deluxe Rooms</th>
+                <td>{rooms.deluxRooms}</td>
+            </tr>
+            <tr>
+                <th>Price Paid</th>
+                <td>{rooms.pricePaid}</td>
+            </tr>
+            </table>
+                    <Link to ='/'>Back to Home</Link>
+        </div>
+
+            </>
+        )}
+    </div>
+)
+
+
+}
+
+export default ViewService
+
+<Button variant="primary" style={{ margin: '10px', color: '#fff', backgroundColor: '#007bff', borderColor: '#007bff' }}>
+                            <Link to='/roomSearchController' style={{ color: '#fff', textDecoration: 'none' }}>Back to Search</Link>
+                        </Button>
+                        <Button variant="primary" style={{ margin: '10px', color: '#fff', backgroundColor: '#007bff', borderColor: '#007bff' }}>
+                            <Link to='/' style={{ color: '#fff', textDecoration: 'none' }}>Back to Home</Link>
+                        </Button>
+
+<center>
+          <div>
+          <Button variant="primary" style={{margin: '10px', color: '#fff', backgroundColor: '#007bff', borderColor: '#007bff'}}>
+              <Link to ='/viewController' style={{color: '#fff', textDecoration: 'none'}}>Back to view</Link>
+           </Button>
+           <Button variant="primary" style={{margin: '10px', color: '#fff', backgroundColor: '#007bff', borderColor: '#007bff'}}>
+               <Link to ='/' style={{color: '#fff', textDecoration: 'none'}}>Back to Home</Link>
+          </Button>
+          </div>
+      </center>
+
+
+
+ <label for="bookingId" className='mt-2'><strong>bookingId</strong></label>
+          <input type='text' placeholder='Enter bookingId' name='bookingId' className='form-control' onChange={handleChange}/>
+          {errors.bookingId && <p style={{color:'red'}}>{errors.bookingId}</p>}
+
+
+<Stack gap={2} className="col-md-5 mx-auto">
+                <Button varient ="secondary"  onClick={handleGetDetails}>Search Room</Button>
+            </Stack>
