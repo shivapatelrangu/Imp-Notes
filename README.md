@@ -27,21 +27,22 @@ Helps ensure high-quality software delivery.
 
 1) SRP - SINGLE RESPONSIBILTY PRINCIPLE:-
         A class/package/application should have one and only one reason to change.
-   Example:
-                                 public class Tast {
-                                                    public void downloadFile(String location) { 
-                                                        // Code for downloading a file
-                                                    }
-                                                
-                                                    public void parseFile(File file) { 
-                                                        // Code for parsing the file
-                                                    }
-                                                
-                                                    public void persistTheDate(Data data) { 
-                                                        // Code for saving data
-                                                    }
-                                                }
+   In this example:
 
+                                        
+                                        public class Tast {
+                                            public void downloadFile(String location) { 
+                                                // Code for downloading a file
+                                            }
+                                        
+                                            public void parseFile(File file) { 
+                                                // Code for parsing the file
+                                            }
+                                        
+                                            public void persistTheDate(Data data) { 
+                                                // Code for saving data
+                                            }
+                                        }
 
 
 
