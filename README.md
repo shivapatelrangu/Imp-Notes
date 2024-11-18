@@ -13,7 +13,7 @@ This ensures that future requirements can be incorporated smoothly.
 Well-structured code can be reused in different parts of the application or even across projects.
 Reduces redundancy and effort in the long run.
 
-6. Reduces Complexity
+4. Reduces Complexity
 Divides responsibilities across classes and methods, leading to cleaner and simpler designs.
 Easier to understand and navigate through the codebase.
 
@@ -21,7 +21,11 @@ Easier to understand and navigate through the codebase.
 Code adhering to SOLID principles is loosely coupled, making it easier to test individual components.
 Helps ensure high-quality software delivery.
 
-   1) SRP - SINGLE RESPONSIBILTY PRINCIPLE:-
+
+
+
+
+1) SRP - SINGLE RESPONSIBILTY PRINCIPLE:-
         A class/package/application should have one and only one reason to change.
    Example:
                   public class Tast{
@@ -29,8 +33,12 @@ Helps ensure high-quality software delivery.
                               public void parseFile(File file);
                               public void persistTheDate(Data data);
                       }
-  
-   2)  Open/Closed Principle (OCP)
+
+
+
+
+
+2)  Open/Closed Principle (OCP)
        The Open/Closed Principle is one of the five SOLID principles in object-oriented programming. It states:
 
 "A class should be open for extension but closed for modification."
@@ -117,8 +125,11 @@ Maintainable: Existing functionality remains unaffected, reducing the chances of
 Adheres to OCP: Classes are open for extension (new discount types) but closed for modification. 
 
 
+
+
  
-   3) Liskov Substitution Principle (LSP):
+ 
+ 3) Liskov Substitution Principle (LSP):
 
 The Liskov Substitution Principle (LSP) is the "L" in the SOLID principles of object-oriented programming. It states:
 
@@ -193,7 +204,11 @@ Ostrich doesn’t break expectations as it does not implement fly.
 
 
 
-4)   Interface Segregation Principle (ISP) :
+
+
+
+
+4) Interface Segregation Principle (ISP) :
 
    The Interface Segregation Principle states:
 "A client should not be forced to implement interfaces it does not use."
